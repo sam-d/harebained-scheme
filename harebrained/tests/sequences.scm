@@ -1,0 +1,50 @@
+#!r6rs
+(import (rnrs base)
+	(rnrs hashtables (6))
+	(srfi :64)
+	(harebrained tests runner)
+	(harebrained bio sequences)
+	(harebrained bio read fasta))
+(test-runner-current (scheme-test-runner #f #f))
+(test-begin "base-tests")
+(test-eq 0 (bioseq-length (bioseq #f (vector))))
+(test-eq 4 (bioseq-length (bioseq #f (vector 'A 'C 'G 'T))))
+(test-group "<bioseq> accessor functions"
+  (test-assert (bioseq? (bioseq #f #f)))
+  (test-assert (string=? "" (bioseq-name (bioseq "" #f))))
+  (test-assert (protein? (protein "" #f)))
+  (test-assert (dna? (dna "" #f)))
+  (test-assert (rna? (rna "" #f))))
+(test-assert (string=? "ACGT" (bioseq->string (make-bioseq "ACGT"))))
+(test-assert (string=? "TGCA" (bioseq->string (bioseq-reverse (make-bioseq "ACGT")))))
+(test-assert (string=? "TGCA" (bioseq->string (dna-complement (make-bioseq "ACGT")))))
+(test-assert (string=? "ACGT" (bioseq->string (dna-reverse-complement (make-bioseq "ACGT")))))
+(test-assert (string=? "oldname" (bioseq-name (bioseq "oldname" #f))))
+(test-assert (string=? "newname" (bioseq-name (bioseq-rename (bioseq "oldname" #f) "newname"))))
+(test-eq 4 (bioseq-length (make-bioseq "ACGU")))
+(test-eq 'A  (bioseq-ref (make-bioseq "ACGU") 0))
+(test-eq 'C  (bioseq-ref (make-bioseq "ACGU") 1))
+(test-eq 'G  (bioseq-ref (make-bioseq "ACGU") 2))
+(test-eq 'U  (bioseq-ref (make-bioseq "ACGU") 3))
+(test-assert (string=? "CGT" (bioseq->string (bioseq-subsequence (make-bioseq "ACGT") 1 4))))
+;(test-assert (string=? "CGT" (bioseq->string (bioseq-subsequence (make-bioseq "ACGT") (ival 'start 1 'end 4)))))
+(test-error (bioseq-subsequence (make-bioseq "ACGT") 4 1))
+(test-error (bioseq-subsequence (make-bioseq "ACGT") 0 5))
+(test-error (bioseq-subsequence (make-bioseq "ACGT") -1 3))
+(test-assert (string=? "AUGU" (bioseq->string (dna->rna (make-bioseq "ATGT")))))
+(test-assert (string=? "ATGT" (bioseq->string (rna->dna (make-bioseq "AUGU")))))
+(test-assert (= 3 (hashtable-ref (bioseq-counts (make-bioseq "CCCATGTAG")) 'C 'error)))
+;;(test-assert (not (bioseq-search (make-bioseq "ACGTACTGACTT") (make-bioseq "XXX"))))
+;;(test-assert (= 0 (bioseq-search (make-bioseq "ACGTACTGACGT") (make-bioseq "ACG") #t)))
+;;(test-equal '(0 8) (bioseq-search (make-bioseq "ACGTACTGACGT") (make-bioseq "ACG") #f))
+(test-group "reading fasta (implicitly tests choose-alphabet)"
+  (test-assert (bioseq? (make-bioseq "ASDFIAMRORTBM" "bla"))) ;contains symbols that are not DNA, RNA nor amino acids
+  (test-assert (not (dna? (make-bioseq "ASDFIAMRORTBM" "bla")))) ;contains symbols that are not DNA, RNA nor amino acids
+  (test-assert (not (rna? (make-bioseq "ASDFIAMRORTBM" "bla")))) ;contains symbols that are not DNA, RNA nor amino acids
+  (test-assert (not (protein? (make-bioseq "ASDFIAMRORTBM" "bla")))) ;contains symbols that are not DNA, RNA nor amino acids
+  (test-assert (protein? (make-bioseq "AYWSGMVPTC" "protein")))
+  (test-assert (dna? (make-bioseq "ACGTGACGTG" "dna")))
+  (test-assert (rna? (make-bioseq "AGUCUGCUA" "rna"))))
+(test-end "base-tests")
+
+;TODO test bioseq-translate

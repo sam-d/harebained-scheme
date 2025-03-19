@@ -1,0 +1,5 @@
+digraph{
+"<bio>" -> "<named>"
+"<named>" -> {"<bioseq>" "<biocol>"}
+"<bioseq>" -> {"<dna>" "<rna>" "<protein>"}
+}
