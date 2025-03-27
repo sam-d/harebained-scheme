@@ -1,13 +1,14 @@
+[[./doc/logo/logo.png]]
 * About the project
 
 I was fed up with some of the peculiarities of the R programming language at the same time that I started dipping my toes into the world of Scheme. The elegance of this language struck me. To be able for me to use it productively it would need to support scientific computing. So I started implementing libraries for bioinformatics, as I am most familiar with this field. I write this in the hope that it will get adopted and grow in popularity to the size of support scientific computing has in R or python. Surely this is a harebrained scheme!
 Documentation can be found online at [[http://harebrained.sam-d.com][harebrained.sam-d.com]]
 ** Status
-Currently the library is still in flux until the 1.0 release. See [[* Roamap]] for planned features.
+Currently the library is still in flux until the 1.0 release. See Roadmap for planned features.
 
 * Getting started
 ** Installation
-(harebrained scheme) is currently distributed as a guix package inside its source code repository. See [[* Usage]] on how to use/install.
+(harebrained scheme) is currently distributed as a guix package inside its source code repository. See Usage on how to use/install.
 
 * Usage
 First we will start a guix shell with the required packages to work in a chez-scheme environment:
